@@ -33,7 +33,7 @@
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "@n8n/n8n-nodes-dev": "^1.7.0",
+    "n8n-nodes-dev": "^1.7.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
