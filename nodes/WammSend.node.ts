@@ -14,7 +14,7 @@ export class WammSend implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'WAMM',
 		name: 'wammSend',
-		icon: 'file:wamm.png',
+		icon: 'file:../assets/wamm.png',
 		group: ['transform'],
 		version: 1,
 		description: 'Send direct WhatsApp messages via WAMM',
