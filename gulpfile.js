@@ -10,7 +10,6 @@ gulp.task('build:icons', function() {
   return gulp.src(ICONS_SRC, { allowEmpty: true })
     .pipe(iconfont({
       fontName: 'n8n-nodes',
-      path: 'src/icon-template.css',
       targetPath: '../../css/n8n-nodes-icon-font.css',
       fontPath: '../../fonts/',
     }))
