@@ -3,7 +3,8 @@ import {
   INodeExecutionData, 
   INodeType, 
   INodeTypeDescription,
-  IDataObject
+  IDataObject,
+  NodeConnectionType
 } from 'n8n-workflow';
 
 interface IWammCredentials {
@@ -23,8 +24,8 @@ export class WammSend implements INodeType {
     defaults: {
       name: 'WAMM: Send Message',
     },
-    inputs: ['main'],
-    outputs: ['main'],
+    inputs: [NodeConnectionType.Main],
+    outputs: [NodeConnectionType.Main],
     credentials: [
       {
         name: 'wammApi',
