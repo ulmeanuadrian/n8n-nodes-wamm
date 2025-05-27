@@ -1,0 +1,16 @@
+{
+    "name": "WAMM: Send Message",
+    "version": 1,
+    "description": "Send WhatsApp messages via the WAMM API",
+    "inputs": ["main"],
+    "outputs": ["main"],
+    "credentials": ["wammApi"],
+    "defaults": { "name": "WAMM: Send Message" },
+    "properties": [
+      { "displayName": "Instance ID", "name": "instanceId", "type": "string", "default": "" },
+      { "displayName": "Phone Number", "name": "phone", "type": "string", "default": "" },
+      { "displayName": "Message", "name": "message", "type": "string", "default": "" },
+      { "displayName": "Schedule Time", "name": "time", "type": "string", "default": "" }
+    ]
+  }
+  

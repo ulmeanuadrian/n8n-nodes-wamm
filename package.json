@@ -1,0 +1,46 @@
+{
+  "name": "n8n-nodes-wamm",
+  "version": "0.1.0",
+  "description": "Community node: send WhatsApp messages via the WAMM API",
+  "author": "Adrian <ulmeanu.a@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "n8n-community-node-package",
+    "n8n",
+    "whatsapp",
+    "wamm"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ulmeanuadrian/n8n-nodes-wamm.git"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "n8n-node-dev build",
+    "dev": "n8n-node-dev",
+    "lint": "eslint . --ext .ts"
+  },
+  "dependencies": {
+    "n8n-workflow": "^1.46.0",
+    "n8n-core": "^1.46.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "eslint": "^8.57.0",
+    "n8n-node-dev": "^1.1.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.4.0"
+  },
+  "n8n": {
+    "nodes": [
+      "./dist/nodes/WammSend/WammSend.node.js"
+    ],
+    "credentials": [
+      "./dist/credentials/WammApi.credentials.js"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
