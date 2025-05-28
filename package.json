@@ -17,7 +17,7 @@
   "main": "dist/nodes/Wamm.node.js",
   "scripts": {
     "build": "tsc",
-    "postbuild": "copyfiles assets/**/*.* dist/",
+    "postbuild": "xcopy /Y /I /E assets dist\\assets && copy /Y wamm.png dist\\",
     "dev": "tsc --watch",
     "lint": "eslint nodes credentials --ext .ts",
     "lint:fix": "eslint nodes credentials --ext .ts --fix",
