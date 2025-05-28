@@ -14,7 +14,7 @@
     "type": "git",
     "url": "https://github.com/ulmeanuadrian/n8n-nodes-wamm.git"
   },
-  "main": "dist/nodes/WammSend.node.js",
+  "main": "dist/nodes/WammSend/WammSend.node.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -43,7 +43,7 @@
       "dist/credentials/WammApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/WammSend.node.js"
+      "dist/nodes/WammSend/WammSend.node.js"
     ]
   },
   "engines": {
