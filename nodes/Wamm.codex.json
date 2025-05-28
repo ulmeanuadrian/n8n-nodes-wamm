@@ -1,0 +1,163 @@
+{
+  "name": "WAMM PRO",
+  "version": 1,
+  "description": "Send direct WhatsApp messages using WAMM API",
+  "inputs": ["main"],
+  "outputs": ["main"],
+  "credentials": ["wammApi"],
+  "defaults": {"name": "WAMM: Send Message"},
+  "operations": [
+    {
+      "name": "Send Message",
+      "value": "sendMessage",
+      "description": "Send a WhatsApp message",
+      "action": "Send a WhatsApp message"
+    },
+    {
+      "name": "Send Media & File",
+      "value": "sendMedia",
+      "description": "Send media or file via WhatsApp",
+      "action": "Send media or file via WhatsApp"
+    },
+    {
+      "name": "Send Template",
+      "value": "sendTemplate",
+      "description": "Send a template message via WhatsApp",
+      "action": "Send a template message via WhatsApp"
+    },
+    {
+      "name": "Add to Contact List",
+      "value": "addToList",
+      "description": "Add a contact to a list",
+      "action": "Add a contact to a list"
+    },
+    {
+      "name": "Remove from Contact List",
+      "value": "removeFromList",
+      "description": "Remove a contact from a list or all lists",
+      "action": "Remove a contact from a list or all lists"
+    }
+  ],
+  "properties": [
+    {
+      "displayName": "Instance ID",
+      "name": "instanceId",
+      "type": "string",
+      "default": "",
+      "required": true,
+      "description": "Your WAMM instance ID"
+    },
+    {
+      "displayName": "Phone Number",
+      "name": "phone",
+      "type": "string",
+      "default": "",
+      "required": true,
+      "description": "Phone number in international format (without +)"
+    },
+    {
+      "displayName": "Message",
+      "name": "message",
+      "type": "string",
+      "default": "",
+      "required": true,
+      "description": "Message to send",
+      "displayOptions": {
+        "show": {
+          "operation": ["sendMessage", "sendMedia"]
+        }
+      }
+    },
+    {
+      "displayName": "Schedule Time",
+      "name": "time",
+      "type": "string",
+      "default": "",
+      "required": false,
+      "description": "Schedule time (YYYY-MM-DD HH:mm or now+HH:mm)",
+      "displayOptions": {
+        "show": {
+          "operation": ["sendMessage", "sendMedia", "sendTemplate"]
+        }
+      }
+    },
+    {
+      "displayName": "Media URL",
+      "name": "mediaUrl",
+      "type": "string",
+      "default": "",
+      "required": true,
+      "description": "URL to the media file you want to send",
+      "displayOptions": {
+        "show": {
+          "operation": ["sendMedia"]
+        }
+      }
+    },
+    {
+      "displayName": "Template ID",
+      "name": "template",
+      "type": "string",
+      "default": "",
+      "required": true,
+      "description": "ID of the template to send",
+      "displayOptions": {
+        "show": {
+          "operation": ["sendTemplate"]
+        }
+      }
+    },
+    {
+      "displayName": "Template Parameters",
+      "name": "templateParams",
+      "type": "string",
+      "default": "{}",
+      "required": false,
+      "description": "JSON string of parameters to replace in template (e.g., {\"param1\":\"value1\",\"param2\":\"value2\"})",
+      "displayOptions": {
+        "show": {
+          "operation": ["sendTemplate"]
+        }
+      }
+    },
+    {
+      "displayName": "List ID",
+      "name": "listId",
+      "type": "string",
+      "default": "",
+      "required": true,
+      "description": "ID of the contact list",
+      "displayOptions": {
+        "show": {
+          "operation": ["addToList", "removeFromList"]
+        }
+      }
+    },
+    {
+      "displayName": "Remove from All Lists",
+      "name": "removeAll",
+      "type": "boolean",
+      "default": false,
+      "required": false,
+      "description": "If true, will remove contact from all lists",
+      "displayOptions": {
+        "show": {
+          "operation": ["removeFromList"]
+        }
+      }
+    },
+    {
+      "displayName": "Contact Parameters",
+      "name": "contactParams",
+      "type": "string",
+      "default": "{}",
+      "required": false,
+      "description": "JSON string of parameters for the contact (e.g., {\"param1\":\"value1\",\"param2\":\"value2\"})",
+      "displayOptions": {
+        "show": {
+          "operation": ["addToList"]
+        }
+      }
+    }
+  ]
+}

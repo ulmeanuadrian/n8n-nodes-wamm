@@ -16,9 +16,9 @@ const WAMM_BASE_URL = 'https://app.wamm.pro/api';
 
 export class WammSend implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'WAMM WhatsApp',
-		name: 'wammSend',
-		icon: 'file:../assets/wamm.png',
+		displayName: 'WAMM PRO',
+		name: 'wammpro',
+		icon: 'file:wamm.png',
 		group: ['communication'],
 		version: 1,
 		subtitle: 'Send WhatsApp messages via WAMM API',
@@ -213,7 +213,7 @@ export class WammSend implements INodeType {
 		let responseDataFromApi;
 		const allReturnData: IDataObject[] = [];
 
-		const baseURL = WAMM_BASE_URL; 
+		const baseURL = WAMM_BASE_URL;
 
 		for (let i = 0; i < items.length; i++) {
 			const operation = this.getNodeParameter('operation', i, 'sendMessage') as string;
@@ -222,7 +222,7 @@ export class WammSend implements INodeType {
 				const credentials = await this.getCredentials('wammApi') as IWammCredentials;
 				const instanceId = this.getNodeParameter('instanceId', i) as string;
 				const phone = this.getNodeParameter('phone', i) as string;
-				
+
 				let endpoint = '';
 				const qs: IDataObject = {
 					instance_id: instanceId,
@@ -238,8 +238,7 @@ export class WammSend implements INodeType {
 					if (time) {
 						qs.time = time;
 					}
-				} 
-				else if (operation === 'sendMedia') {
+				} else if (operation === 'sendMedia') {
 					endpoint = '/send';
 					qs.type = 'media';
 					qs.message = this.getNodeParameter('message', i) as string;
@@ -248,36 +247,33 @@ export class WammSend implements INodeType {
 					if (time) {
 						qs.time = time;
 					}
-				}
-				else if (operation === 'sendTemplate') {
+				} else if (operation === 'sendTemplate') {
 					endpoint = '/send';
 					qs.type = 'template';
 					qs.template = this.getNodeParameter('template', i) as string;
-					
+
 					const templateParams = this.getNodeParameter('templateParams', i, '{}') as string;
 					try {
 						qs.replace = JSON.parse(templateParams);
 					} catch (e: any) {
 						throw new Error(`Invalid JSON format for template parameters: ${e.message}`);
 					}
-					
+
 					const time = this.getNodeParameter('time', i, '') as string;
 					if (time) {
 						qs.time = time;
 					}
-				}
-				else if (operation === 'addToList') {
+				} else if (operation === 'addToList') {
 					endpoint = '/addtolist';
 					qs.wamm_newslist_id = this.getNodeParameter('listId', i) as string;
-					
+
 					const contactParams = this.getNodeParameter('contactParams', i, '{}') as string;
 					try {
 						qs.params = JSON.parse(contactParams);
 					} catch (e: any) {
 						throw new Error(`Invalid JSON format for contact parameters: ${e.message}`);
 					}
-				}
-				else if (operation === 'removeFromList') {
+				} else if (operation === 'removeFromList') {
 					endpoint = '/delfromlist';
 					const removeAll = this.getNodeParameter('removeAll', i, false) as boolean;
 					if (!removeAll) {
@@ -301,7 +297,7 @@ export class WammSend implements INodeType {
 				});
 
 				if (responseDataFromApi.status !== 'success' && responseDataFromApi.ok !== true && responseDataFromApi.message !== "ok") { 
-					this.logger.warn(`WAMM API a returnat un posibil eșec: ${JSON.stringify(responseDataFromApi)}`);
+					this.logger.warn(`WAMM API returned a possible failure: ${JSON.stringify(responseDataFromApi)}`);
 				}
 
 				allReturnData.push({
