@@ -72,5 +72,5 @@ This node is compatible with n8n version 1.0.0 or later.
 ## Resources
 
 * [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
-* [WAMM API Documentation](https://app.wamm.pro/docs)
+* [WAMM API Documentation](https://wamm.pro/apidoc/)
 * [GitHub: n8n-nodes-wamm](https://github.com/ulmeanuadrian/n8n-nodes-wamm)
