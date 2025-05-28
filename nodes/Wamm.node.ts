@@ -14,7 +14,7 @@ interface IWammCredentials {
 
 const WAMM_BASE_URL = 'https://app.wamm.pro/api';
 
-export class WammSend implements INodeType {
+export class Wamm implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'WAMM PRO',
 		name: 'wammpro',
