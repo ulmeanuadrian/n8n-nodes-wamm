@@ -14,7 +14,7 @@
     "type": "git",
     "url": "https://github.com/ulmeanuadrian/n8n-nodes-wamm.git"
   },
-  "main": "dist/nodes/WammSend/WammSend.node.js",
+  "main": "dist/nodes/WammSend.node.js",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -23,10 +23,14 @@
     "format": "prettier nodes credentials --write"
   },
   "dependencies": {
-    "n8n-workflow": "^1.0.0",
-    "n8n-core": "^1.0.0"
   },
+  "overrides": {
+    "@azure/storage-blob": "12.8.0"
+  },
+
   "devDependencies": {
+    "n8n-workflow":"^1.0.0",
+    "n8n-core":"^1.0.0",
     "@types/express": "^4.17.17",
     "@types/node": "^18.15.11",
     "@types/request-promise-native": "^1.0.18",
@@ -43,7 +47,7 @@
       "dist/credentials/WammApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/WammSend/WammSend.node.js"
+      "dist/nodes/WammSend.node.js"
     ]
   },
   "engines": {
