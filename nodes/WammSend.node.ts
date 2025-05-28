@@ -12,7 +12,6 @@ interface IWammCredentials {
 	email: string;
 }
 
-// Definește baseURL aici pentru a fi accesibil
 const WAMM_BASE_URL = 'https://app.wamm.pro/api';
 
 export class WammSend implements INodeType {
@@ -36,7 +35,7 @@ export class WammSend implements INodeType {
 			},
 		],
 		requestDefaults: {
-			baseURL: WAMM_BASE_URL, // Folosește constanta definită
+			baseURL: WAMM_BASE_URL,
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
@@ -55,6 +54,30 @@ export class WammSend implements INodeType {
 						description: 'Send a WhatsApp message',
 						action: 'Send a WhatsApp message',
 					},
+					{
+						name: 'Send Media & File',
+						value: 'sendMedia',
+						description: 'Send media or file via WhatsApp',
+						action: 'Send media or file via WhatsApp',
+					},
+					{
+						name: 'Send Template',
+						value: 'sendTemplate',
+						description: 'Send a template message via WhatsApp',
+						action: 'Send a template message via WhatsApp',
+					},
+					{
+						name: 'Add to Contact List',
+						value: 'addToList',
+						description: 'Add a contact to a list',
+						action: 'Add a contact to a list',
+					},
+					{
+						name: 'Remove from Contact List',
+						value: 'removeFromList',
+						description: 'Remove a contact from a list or all lists',
+						action: 'Remove a contact from a list or all lists',
+					},
 				],
 				default: 'sendMessage',
 			},
@@ -65,11 +88,6 @@ export class WammSend implements INodeType {
 				required: true,
 				default: '',
 				description: 'Your WAMM instance ID',
-				displayOptions: {
-					show: {
-						operation: ['sendMessage'],
-					},
-				},
 			},
 			{
 				displayName: 'Phone Number',
@@ -79,11 +97,6 @@ export class WammSend implements INodeType {
 				default: '',
 				placeholder: '40712345678',
 				description: 'Phone number in international format (without +)',
-				displayOptions: {
-					show: {
-						operation: ['sendMessage'],
-					},
-				},
 			},
 			{
 				displayName: 'Message',
@@ -97,7 +110,7 @@ export class WammSend implements INodeType {
 				description: 'Message to send',
 				displayOptions: {
 					show: {
-						operation: ['sendMessage'],
+						operation: ['sendMessage', 'sendMedia'],
 					},
 				},
 			},
@@ -110,7 +123,85 @@ export class WammSend implements INodeType {
 				description: 'Schedule time (YYYY-MM-DD HH:mm or now+HH:mm)',
 				displayOptions: {
 					show: {
-						operation: ['sendMessage'],
+						operation: ['sendMessage', 'sendMedia', 'sendTemplate'],
+					},
+				},
+			},
+			{
+				displayName: 'Media URL',
+				name: 'mediaUrl',
+				type: 'string',
+				required: true,
+				default: '',
+				description: 'URL to the media file you want to send',
+				displayOptions: {
+					show: {
+						operation: ['sendMedia'],
+					},
+				},
+			},
+			{
+				displayName: 'Template ID',
+				name: 'template',
+				type: 'string',
+				required: true,
+				default: '',
+				description: 'ID of the template to send',
+				displayOptions: {
+					show: {
+						operation: ['sendTemplate'],
+					},
+				},
+			},
+			{
+				displayName: 'Template Parameters',
+				name: 'templateParams',
+				type: 'string',
+				required: false,
+				default: '{}',
+				description: 'JSON string of parameters to replace in template (e.g., {"param1":"value1","param2":"value2"})',
+				displayOptions: {
+					show: {
+						operation: ['sendTemplate'],
+					},
+				},
+			},
+			{
+				displayName: 'List ID',
+				name: 'listId',
+				type: 'string',
+				required: true,
+				default: '',
+				description: 'ID of the contact list',
+				displayOptions: {
+					show: {
+						operation: ['addToList', 'removeFromList'],
+					},
+				},
+			},
+			{
+				displayName: 'Remove from All Lists',
+				name: 'removeAll',
+				type: 'boolean',
+				required: false,
+				default: false,
+				description: 'If true, will remove contact from all lists',
+				displayOptions: {
+					show: {
+						operation: ['removeFromList'],
+					},
+				},
+			},
+			{
+				displayName: 'Contact Parameters',
+				name: 'contactParams',
+				type: 'string',
+				required: false,
+				default: '{}',
+				description: 'JSON string of parameters for the contact (e.g., {"param1":"value1","param2":"value2"})',
+				displayOptions: {
+					show: {
+						operation: ['addToList'],
 					},
 				},
 			},
@@ -122,73 +213,114 @@ export class WammSend implements INodeType {
 		let responseDataFromApi;
 		const allReturnData: IDataObject[] = [];
 
-		// Folosește direct constanta WAMM_BASE_URL
 		const baseURL = WAMM_BASE_URL; 
 
 		for (let i = 0; i < items.length; i++) {
 			const operation = this.getNodeParameter('operation', i, 'sendMessage') as string;
 
 			try {
+				const credentials = await this.getCredentials('wammApi') as IWammCredentials;
+				const instanceId = this.getNodeParameter('instanceId', i) as string;
+				const phone = this.getNodeParameter('phone', i) as string;
+				
+				let endpoint = '';
+				const qs: IDataObject = {
+					instance_id: instanceId,
+					access_token: credentials.token,
+					number: phone,
+				};
+
 				if (operation === 'sendMessage') {
-					const credentials = await this.getCredentials('wammApi') as IWammCredentials;
-					const instanceId = this.getNodeParameter('instanceId', i) as string;
-					const phone = this.getNodeParameter('phone', i) as string;
-					const message = this.getNodeParameter('message', i) as string;
+					endpoint = '/send';
+					qs.type = 'text';
+					qs.message = this.getNodeParameter('message', i) as string;
 					const time = this.getNodeParameter('time', i, '') as string;
-
-					const fullUrl = `${baseURL}/send`; // Construiește URL-ul complet
-
-					const qs: IDataObject = {
-						number: phone,
-						type: 'text',
-						instance_id: instanceId,
-						access_token: credentials.token,
-						message: message,
-					};
-
 					if (time) {
 						qs.time = time;
 					}
-
-					this.logger.debug(`WAMM Node - Requesting URL: "${fullUrl}"`);
-					this.logger.debug(`WAMM Node - QueryString: ${JSON.stringify(qs)}`);
-					// this.logger.debug(`WAMM Node - Headers: ACCESS-TOKEN: ${credentials.token}:${credentials.email}`);
-
-
-					responseDataFromApi = await this.helpers.request({
-						method: 'GET',
-						url: fullUrl,  // Folosește URL-ul complet aici
-						qs,
-						json: true,
-						headers: {
-							'ACCESS-TOKEN': `${credentials.token}:${credentials.email}`,
-						},
-					});
-
-					if (responseDataFromApi.status !== 'success' && responseDataFromApi.ok !== true && responseDataFromApi.message !== "ok") { 
-						this.logger.warn(`WAMM API a returnat un posibil eșec: ${JSON.stringify(responseDataFromApi)}`);
-						// throw new NodeApiError(this.getNode(), responseDataFromApi, { message: `WAMM API error: ${responseDataFromApi.message || 'Unknown error'}` });
+				} 
+				else if (operation === 'sendMedia') {
+					endpoint = '/send';
+					qs.type = 'media';
+					qs.message = this.getNodeParameter('message', i) as string;
+					qs.media_url = this.getNodeParameter('mediaUrl', i) as string;
+					const time = this.getNodeParameter('time', i, '') as string;
+					if (time) {
+						qs.time = time;
 					}
-
-					allReturnData.push({
-						success: true, 
-						apiResponse: responseDataFromApi,
-						phone,
-						instanceId,
-						timestamp: new Date().toISOString(),
-					});
 				}
+				else if (operation === 'sendTemplate') {
+					endpoint = '/send';
+					qs.type = 'template';
+					qs.template = this.getNodeParameter('template', i) as string;
+					
+					const templateParams = this.getNodeParameter('templateParams', i, '{}') as string;
+					try {
+						qs.replace = JSON.parse(templateParams);
+					} catch (e: any) {
+						throw new Error(`Invalid JSON format for template parameters: ${e.message}`);
+					}
+					
+					const time = this.getNodeParameter('time', i, '') as string;
+					if (time) {
+						qs.time = time;
+					}
+				}
+				else if (operation === 'addToList') {
+					endpoint = '/addtolist';
+					qs.wamm_newslist_id = this.getNodeParameter('listId', i) as string;
+					
+					const contactParams = this.getNodeParameter('contactParams', i, '{}') as string;
+					try {
+						qs.params = JSON.parse(contactParams);
+					} catch (e: any) {
+						throw new Error(`Invalid JSON format for contact parameters: ${e.message}`);
+					}
+				}
+				else if (operation === 'removeFromList') {
+					endpoint = '/delfromlist';
+					const removeAll = this.getNodeParameter('removeAll', i, false) as boolean;
+					if (!removeAll) {
+						qs.wamm_newslist_id = this.getNodeParameter('listId', i) as string;
+					}
+				}
+
+				const fullUrl = `${baseURL}${endpoint}`;
+
+				this.logger.debug(`WAMM Node - Requesting URL: "${fullUrl}"`);
+				this.logger.debug(`WAMM Node - QueryString: ${JSON.stringify(qs)}`);
+
+				responseDataFromApi = await this.helpers.request({
+					method: 'GET',
+					url: fullUrl,
+					qs,
+					json: true,
+					headers: {
+						'ACCESS-TOKEN': `${credentials.token}:${credentials.email}`,
+					},
+				});
+
+				if (responseDataFromApi.status !== 'success' && responseDataFromApi.ok !== true && responseDataFromApi.message !== "ok") { 
+					this.logger.warn(`WAMM API a returnat un posibil eșec: ${JSON.stringify(responseDataFromApi)}`);
+				}
+
+				allReturnData.push({
+					success: true, 
+					apiResponse: responseDataFromApi,
+					operation,
+					phone,
+					instanceId,
+					timestamp: new Date().toISOString(),
+				});
 			} catch (error: any) {
 				if (this.continueOnFail()) {
 					allReturnData.push({
-						error: error.message || 'Eroare necunoscută în WAMM Send',
+						error: error.message || 'Unknown error in WAMM Send',
+						operation,
 						itemDetails: items[i].json,
 					});
 					continue;
 				}
-				// if (error.response && error.response.data) {
-				// 	throw new NodeApiError(this.getNode(), error.response.data, { message: `WAMM API request failed: ${error.message}` });
-				// }
 				throw error;
 			}
 		}
