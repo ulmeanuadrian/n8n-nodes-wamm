@@ -12,6 +12,9 @@ interface IWammCredentials {
 	email: string;
 }
 
+// Definește baseURL aici pentru a fi accesibil
+const WAMM_BASE_URL = 'https://app.wamm.pro/api';
+
 export class WammSend implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'WAMM WhatsApp',
@@ -32,9 +35,8 @@ export class WammSend implements INodeType {
 				required: true,
 			},
 		],
-		// Acesta este baseURL pe care îl vom folosi:
 		requestDefaults: {
-			baseURL: 'https://app.wamm.pro/api',
+			baseURL: WAMM_BASE_URL, // Folosește constanta definită
 			headers: {
 				Accept: 'application/json',
 				'Content-Type': 'application/json',
@@ -117,17 +119,11 @@ export class WammSend implements INodeType {
 
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
-		let responseDataFromApi; // Redenumit pentru claritate
+		let responseDataFromApi;
 		const allReturnData: IDataObject[] = [];
 
-		// Preia baseURL direct din descrierea definită mai sus
-		const baseURL = this.description.requestDefaults?.baseURL;
-
-		if (!baseURL) {
-			// Acest log este util dacă baseURL nu este definit în description, deși în cazul tău este.
-			this.logger.error('baseURL lipsește din this.description.requestDefaults!');
-			throw new Error('Configurare internă nod: baseURL lipsește.');
-		}
+		// Folosește direct constanta WAMM_BASE_URL
+		const baseURL = WAMM_BASE_URL; 
 
 		for (let i = 0; i < items.length; i++) {
 			const operation = this.getNodeParameter('operation', i, 'sendMessage') as string;
@@ -156,7 +152,6 @@ export class WammSend implements INodeType {
 
 					this.logger.debug(`WAMM Node - Requesting URL: "${fullUrl}"`);
 					this.logger.debug(`WAMM Node - QueryString: ${JSON.stringify(qs)}`);
-					// S-ar putea să vrei să nu loghezi token-ul și email-ul în producție
 					// this.logger.debug(`WAMM Node - Headers: ACCESS-TOKEN: ${credentials.token}:${credentials.email}`);
 
 
@@ -170,16 +165,13 @@ export class WammSend implements INodeType {
 						},
 					});
 
-					// Verifică răspunsul API conform documentației WAMM
-					// Exemplul de mai jos este generic
 					if (responseDataFromApi.status !== 'success' && responseDataFromApi.ok !== true && responseDataFromApi.message !== "ok") { 
 						this.logger.warn(`WAMM API a returnat un posibil eșec: ${JSON.stringify(responseDataFromApi)}`);
-						// Aruncă o eroare mai specifică dacă API-ul indică un eșec clar
 						// throw new NodeApiError(this.getNode(), responseDataFromApi, { message: `WAMM API error: ${responseDataFromApi.message || 'Unknown error'}` });
 					}
 
 					allReturnData.push({
-						success: true, // Sau o valoare bazată pe răspunsul API
+						success: true, 
 						apiResponse: responseDataFromApi,
 						phone,
 						instanceId,
@@ -194,7 +186,6 @@ export class WammSend implements INodeType {
 					});
 					continue;
 				}
-				// Pentru o eroare mai bună în UI-ul n8n, dacă eroarea vine de la API:
 				// if (error.response && error.response.data) {
 				// 	throw new NodeApiError(this.getNode(), error.response.data, { message: `WAMM API request failed: ${error.message}` });
 				// }
