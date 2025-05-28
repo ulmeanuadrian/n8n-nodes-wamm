@@ -17,7 +17,6 @@
   "main": "dist/nodes/Wamm.node.js",
   "scripts": {
     "build": "tsc",
-    "postbuild": "copyfiles -u 1 assets/**/* dist/",
     "dev": "tsc --watch",
     "lint": "eslint nodes credentials --ext .ts",
     "lint:fix": "eslint nodes credentials --ext .ts --fix",
@@ -37,7 +36,6 @@
     "@types/request-promise-native": "^1.0.18",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
-    "copyfiles": "^2.4.1",
     "eslint": "^8.37.0",
     "eslint-plugin-n8n-nodes-base": "^1.12.1",
     "prettier": "^2.8.7",
@@ -56,7 +54,6 @@
     "node": ">=18.0.0"
   },
   "files": [
-    "dist",
-    "assets"
+    "dist"
   ]
 }
