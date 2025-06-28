@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-wamm",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Community node: send WhatsApp messages via the WAMM API",
   "author": "Adrian <ulmeanu.a@gmail.com>",
   "license": "MIT",
