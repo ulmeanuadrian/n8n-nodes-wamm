@@ -233,6 +233,7 @@ export class Wamm implements INodeType {
 					endpoint = '/send';
 					qs.type = 'text';
 					qs.message = this.getNodeParameter('message', i) as string;
+					qs.sleep = 2;
 					const time = this.getNodeParameter('time', i, '') as string;
 					if (time) {
 						qs.time = time;
@@ -242,6 +243,7 @@ export class Wamm implements INodeType {
 					qs.type = 'media';
 					qs.message = this.getNodeParameter('message', i) as string;
 					qs.media_url = this.getNodeParameter('mediaUrl', i) as string;
+					qs.sleep = 2;
 					const time = this.getNodeParameter('time', i, '') as string;
 					if (time) {
 						qs.time = time;
@@ -250,6 +252,7 @@ export class Wamm implements INodeType {
 					endpoint = '/send';
 					qs.type = 'template';
 					qs.template = this.getNodeParameter('template', i) as string;
+					qs.sleep = 2;
 
 					const templateParams = this.getNodeParameter('templateParams', i, '{}') as string;
 					try {
